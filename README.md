@@ -21,7 +21,7 @@ We are struggling for fetching the evaluations of iPhones from Amazon. We have c
 
 ### Planning State
 
-We are try to integrate the code, in order to provide an interface of the crawler for users so people can fetch whaterver they want. The next step is to organize the evaluations in Elasticsearch by size, color, service provider, and product grade after the crawled data is first categorized by Brand ModelName to form a broad category.
+We are trying to integrate the code, in order to provide an interface of the crawler for users so people can fetch whaterver they want. The next step is to organize the evaluations in Elasticsearch by size, color, service provider, and product grade after the crawled data is first categorized by Brand ModelName to form a broad category.
 
 ### Future Planning
 
