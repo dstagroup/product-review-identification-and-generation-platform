@@ -17,7 +17,7 @@ If we have enough time, we will try to expand an automatic review generation fun
 
 ### Current State
 
-We are struggling for fetching the evaluations of iPhones from Amazon. We have collected 100 reviews of iPhone 14. These evaluations will be used for our deeper analysis. 
+We are struggling for fetching the evaluations of iPhones from Amazon. We have collected 100 reviews of iPhone 13. These evaluations will be used for our deeper analysis. 
 
 ### Planning State
 
