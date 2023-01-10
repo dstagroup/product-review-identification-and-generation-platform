@@ -47,3 +47,11 @@ We are trying to integrate the code, in order to provide an interface of the cra
 - Data Sources
 
   Amazon: We fetch the evaluations of iPhones from Amazon. First, as the product's category, the Brand and ModelName may be found in the product interface's details. After that, we can see that each review is extremely formatted, even though we require content like Size, Colour, Service Provider, Product grade, rating, and comments.  Crawlers and regular expressions can retrieve all of this. 
+
+- Generate Word Cloud
+   
+   The cleaned comments were divided into three categories: positive, negative and neutral, followed by word segmentation and word clouds based on the number of occurrences in each category.
+   
+![image](https://github.com/dstagroup/product-review-identification-and-generation-platform/blob/main/img/positive.png) 
+![image](https://github.com/dstagroup/product-review-identification-and-generation-platform/blob/main/img/negative.png) 
+![image](https://github.com/dstagroup/product-review-identification-and-generation-platform/blob/main/img/neutral.png)
