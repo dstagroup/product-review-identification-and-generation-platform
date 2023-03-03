@@ -12,6 +12,7 @@ def Pipeline(reviewJson):
 
     es=elasticSearchApi.CommodityEsConnect()
     es.AddCommodity(asin,usrID,detail,profile,topicWord,reviewData,posRating)
+    return asin,usrID,detail,profile,topicWord,posRating
 
 if __name__=="__main__":
     reviewJson=preprocess.LoadJson(r"D:\WorkMenu\PythonCode\TextAnalysis\ReviewEmotionAnalysis\input_data\final.json")

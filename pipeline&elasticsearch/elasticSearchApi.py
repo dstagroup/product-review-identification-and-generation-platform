@@ -179,9 +179,6 @@ class UsrTableEsConnect(esConnect):
 
             if profile in profiles:
                 #递归删除后续内容
-                """
-                未完成
-                """
                 indexName="{}_{}".format(usrId,profile)
                 temp=CommodityEsConnect()
                 asin=temp.CheckAsin(usrId,profile)
@@ -236,6 +233,32 @@ class  CommodityEsConnect(esConnect):
         for i in res['hits']['hits']:
             asin.append(i['_source']['asin'])
         return asin
+    
+    def GetUserInfo(self,usrID,profile):
+        indexName="{}_{}".format(usrID,profile)
+        body={
+                "query":{
+                    "term":{
+                        "usrID":usrID
+                    }
+            }
+            }
+        
+        return self.es.search(index=indexName,body=body)['hits']['hits']
+
+    def CheckAsinIsExist(self,usrID,profile,asin):
+        indexName="{}_{}".format(usrID,profile)
+        body={
+            "query":{
+                "term":{
+                    "asin":asin
+                }
+            }
+        }
+        if self.es.search(index=indexName,body=body)['hits']['total']['value']==0:
+            return False
+        else:
+            return True
 
     def AddCommodity(self,asin,usrID,detail,profile,topicWord,reviewData,posRating):
         try:
@@ -251,12 +274,22 @@ class  CommodityEsConnect(esConnect):
                 "topicword":topicWord,
                 "posrating":posRating
             }
-            self.es.index(index=indexName,body=body)
+            body2={
+                "query":{
+                    "term":{
+                        "asin":asin
+                    }
+                }
+            }
+            if self.CheckAsinIsExist(usrID,profile,asin):
+                self.es.update(index=indexName,body=body,id=self.es.search(index=indexName,body=body2)['hits']['hits'][0]['_id'])
+            else:
+                self.es.index(index=indexName,body=body)
 
             if self.CheckIndexIsExist(dataframeIndexName)["statue"]==5:
-                self.DeleteIndex(indexName)
+                self.DeleteIndex(dataframeIndexName)
             
-            self.CreateIndex(indexName)
+            self.CreateIndex(dataframeIndexName)
 
             ep = es_pandas(self.es_host)
             ep.to_es(reviewData, dataframeIndexName, doc_type="_doc", thread_count=2, chunk_size=10000)
@@ -330,7 +363,7 @@ class  CommodityEsConnect(esConnect):
 
 if __name__=="__main__":
     es=CommodityEsConnect()
-    a=es.QueryCommodity("abc","cms5058122924439","b09jp9kmty","LAPTOP_GENERAL",-1)
+    a=es.GetUserInfo("abc","cms5058122924439")
     print(a)
 
 
