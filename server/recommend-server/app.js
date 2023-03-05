@@ -1,6 +1,8 @@
 
 const express = require("express"); 
 const bodyParser = require("body-parser"); 
+//app.js
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json()); 
@@ -9,6 +11,7 @@ app.use(
     extended: true
   })
 ); 
+app.use(cors());
 
 
 app.all("*", function(request, response, next) {
@@ -103,11 +106,195 @@ app.get("/api/reviews", (request, response) => {
   })();
 });
 
+// app.get("/api/test", (request, response) => {
+//   request.statusCode = 200;
+//   console.log(request.query);
+//   var li = request.query.li;
 
+//   for (var i = li.length - 1; i >= 0; i--) {
+//     console.log(li[i]);
+//   }
+
+//   response.send("error!");
+// });
+
+
+
+app.post("/api/test", (request, response) => {
+  request.statusCode = 200;
+  console.log(request);
+  var asin_list = request.body.asin_list;
+
+  for (var i = asin_list.length - 1; i >= 0; i--) {
+    console.log(asin_list[i]);
+    (async () => {
+    try {
+
+      const product_by_asin = await amazonScraper.asin({ asin: asin });
+
+      const reviews_negative = await amazonScraper.reviews({ asin: asin, number: 1000, rating: [1, 2] });
+
+      const reviews_positive = await amazonScraper.reviews({ asin: asin, number: 1000, rating: [3, 5] });
+      console.log(reviews_negative);
+      
+      var list_negative = reviews_negative.result;
+      var list_positive = reviews_positive.result;
+
+      var reviews = [];
+     
+      var n_item = {};
+      var p_item = {};
+
+
+      for (var i = 0; i < list_negative.length; i++) {
+
+        n_item = {
+          "title": list_negative[i].title,
+          "review": list_negative[i].review,
+          "rating": list_negative[i].rating
+        }
+        reviews.push(n_item);
+      }
+
+
+      for (var j = 0; j < list_positive.length; j++) {
+
+        p_item = {
+          "title": list_positive[j].title,
+          "review": list_positive[j].review,
+          "rating": list_positive[j].rating
+        }
+
+        reviews.push(p_item);
+      }
+
+
+      response.send({
+        asin: asin,
+        reviews: reviews
+      });
+      
+    } catch (error) {
+
+      response.send("error!");
+    }
+  })();
+
+  }
+
+  response.send("error!");
+});
+
+app.get("/api/reviews_all2", (request, response) => {
+  
+  request.statusCode = 200;
+  console.log(request.query);
+  var asin = request.query.asin;
+
+
+
+
+  const amazonScraper = require('amazon-buddy');
+  (async () => {
+    try {
+
+
+      const product_by_asin = await amazonScraper.asin({ asin: asin });
+
+      console.log(product_by_asin)
+
+
+      response.send({
+        asin: asin,
+      });
+      
+    } catch (error) {
+
+      response.send("error!");
+    }
+  })();
+});
+
+app.get("/api/reviews_all", (request, response) => {
+  
+  request.statusCode = 200;
+  console.log(request.query);
+  var asin = request.query.asin;
+
+  const amazonScraper = require('amazon-buddy');
+  (async () => {
+    try {
+
+
+      const product_by_asin = await amazonScraper.asin({ asin: asin });
+
+      const reviews_negative = await amazonScraper.reviews({ asin: asin, number: 1000, rating: [1, 2] });
+
+      const reviews_positive = await amazonScraper.reviews({ asin: asin, number: 1000, rating: [3, 5] });
+      console.log(reviews_negative);
+      
+      var brand = product_by_asin.result[0].product_information.brand;
+      var title = product_by_asin.result[0].title;
+      var description = product_by_asin.result[0].description;
+      var feature_bullets = product_by_asin.result[0].feature_bullets;
+      var main_image = product_by_asin.result[0].main_image;
+
+      var detail = {
+        "brand": brand,
+        "title": title,
+        "description": description,
+        "feature_bullets": feature_bullets,
+        "main_image": main_image
+      }
+
+
+      var list_negative = reviews_negative.result;
+      var list_positive = reviews_positive.result;
+
+      var reviews = [];
+     
+      var n_item = {};
+      var p_item = {};
+
+
+      for (var i = 0; i < list_negative.length; i++) {
+
+        n_item = {
+          "title": list_negative[i].title,
+          "review": list_negative[i].review,
+          "rating": list_negative[i].rating
+        }
+        reviews.push(n_item);
+      }
+
+
+      for (var j = 0; j < list_positive.length; j++) {
+
+        p_item = {
+          "title": list_positive[j].title,
+          "review": list_positive[j].review,
+          "rating": list_positive[j].rating
+        }
+
+        reviews.push(p_item);
+      }
+
+      response.send({
+        asin: asin,
+        detail: detail,
+        reviews: reviews
+      });
+      
+    } catch (error) {
+
+      response.send("error!");
+    }
+  })();
+});
 
 
 const hostname = "localhost";
-const port = 8085;
+const port = 8083;
 const server = app.listen(port, hostname, () => {
   console.log(`我在运行了...`);
 });
