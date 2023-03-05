@@ -101,7 +101,7 @@ async def create_user(user: NewUser):
 
 
 @app.put('/reviews')
-async def get_reviews(request: Request):
+async def add_one_analysis(request: Request):
 
     data = await request.json()
 
